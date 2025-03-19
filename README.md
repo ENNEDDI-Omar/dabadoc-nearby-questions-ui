@@ -2,6 +2,19 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
 
+# Description
+This project is a simple Angular-based front-end for the DabaDoc Nearby Questions web application designed to connect people who have location-specific questions with those who can provide answers. The questions are fetched from a REST API.
+
+# Key Features:
+
+- User registration and authentication using email and password
+- Posting questions with a title, content, and location
+- Answering questions posted by other users
+- Viewing a list of questions sorted by distance from the user's location
+- Liking questions and adding them to a personal favorites list
+- Removing questions from the favorites list
+- Displaying liked questions
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
