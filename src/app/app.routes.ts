@@ -1,9 +1,13 @@
 import { Routes } from '@angular/router';
+import {SignupComponent} from "./components/signup/signup.component";
+import {LoginComponent} from "./components/login/login.component";
+import {HomeComponent} from "./pages/home/home.component";
 
 export const routes: Routes = [
-  //{ path: 'questions', component: QuestionsComponent },
-  //{ path: 'favorites', component: FavoritesComponent },
-  //{ path: 'signup', component: SignupComponent },
-  //{ path: 'login', component: LoginComponent },
-  //{ path: '', redirectTo: '/questions', pathMatch: 'full' }
+  { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
+  // { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  // { path: 'questions/new', component: QuestionFormComponent, canActivate: [authGuard] },
+  { path: '**', redirectTo: '' }
 ];

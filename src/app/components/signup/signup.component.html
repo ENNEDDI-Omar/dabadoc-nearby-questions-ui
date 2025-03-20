@@ -1,0 +1,107 @@
+<!-- src/app/components/signup/signup.component.html -->
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Create your account
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600">
+        Or
+        <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+          sign in to your account
+        </a>
+      </p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="mt-8 space-y-6">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <!-- Name -->
+        <div>
+          <label for="name" class="sr-only">Full Name</label>
+          <input id="name" formControlName="name" type="text" required
+                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                 placeholder="Full Name">
+          <div *ngIf="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+               class="text-red-500 text-xs mt-1 ml-1">
+            Name is required and must be at least 3 characters.
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email-address" class="sr-only">Email address</label>
+          <input id="email-address" formControlName="email" type="email" autocomplete="email" required
+                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                 placeholder="Email address">
+          <div *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+               class="text-red-500 text-xs mt-1 ml-1">
+            Please enter a valid email address.
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input id="password" formControlName="password" type="password" autocomplete="new-password" required
+                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                 placeholder="Password">
+          <div *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+               class="text-red-500 text-xs mt-1 ml-1">
+            Password is required and must be at least 6 characters.
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label for="password-confirm" class="sr-only">Confirm password</label>
+          <input id="password-confirm" formControlName="password_confirmation" type="password" autocomplete="new-password" required
+                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                 placeholder="Confirm password">
+          <div *ngIf="signupForm.hasError('mismatch') && signupForm.get('password_confirmation')?.touched"
+               class="text-red-500 text-xs mt-1 ml-1">
+            Passwords don't match.
+          </div>
+        </div>
+      </div>
+
+      <!-- Location toggle -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <input id="useLocation" formControlName="useLocation" type="checkbox"
+                 (change)="toggleLocation()"
+                 class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+          <label for="useLocation" class="ml-2 block text-sm text-gray-900">
+            Share my location
+          </label>
+        </div>
+      </div>
+
+      <!-- Location status -->
+      <div *ngIf="signupForm.get('useLocation')?.value">
+        <div *ngIf="locationLoading" class="text-sm text-gray-500">
+          Getting your location...
+        </div>
+        <div *ngIf="userLocation" class="text-sm text-green-600">
+          Location detected successfully.
+        </div>
+        <div *ngIf="locationError" class="text-sm text-red-500">
+          {{ locationError }}
+        </div>
+      </div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ errorMessage }}</span>
+      </div>
+
+      <div>
+        <button type="submit"
+                [disabled]="signupForm.invalid || loading"
+                class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+          <span *ngIf="loading">Processing...</span>
+          <span *ngIf="!loading">Sign up</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
