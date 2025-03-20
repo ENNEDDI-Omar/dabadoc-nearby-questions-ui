@@ -56,29 +56,48 @@ export class AuthService {
 
   // Connexion
   login(credentials: LoginRequest): Observable<User> {
-    return this.http.post<any>(`${this.apiUrl}/login`, credentials)
-      .pipe(
-        tap(response => {
-          // Extraire le token du header Authorization
-          const authHeader = response.headers?.get('Authorization');
-          if (authHeader) {
-            const token = authHeader.split(' ')[1]; // Format: 'Bearer TOKEN'
-            this.storeToken(token);
-          }
+    return this.http.post<any>(`${this.apiUrl}/api/v1/login`, credentials)
+        .pipe(
+            tap(response => {
+              console.log('Login response:', response);
 
-          // Stocker les informations utilisateur
-          const user = response.data?.user;
-          if (user) {
-            this.storeUser(user);
-            this.currentUserSubject.next(user);
-          }
-        }),
-        map(response => response.data?.user),
-        catchError(error => {
-          console.error('Login error', error);
-          return throwError(() => new Error(error.error?.status?.message || 'Login failed'));
-        })
-      );
+              // Vérifiez d'abord si le token est dans les headers
+              const authHeader = response.headers?.get('Authorization');
+              if (authHeader) {
+                const token = authHeader.split(' ')[1]; // Format: 'Bearer TOKEN'
+                this.storeToken(token);
+                console.log('Token extracted from headers');
+              }
+              // Sinon, vérifiez si le token est dans le corps de la réponse
+              else if (response.token) {
+                this.storeToken(response.token);
+                console.log('Token extracted from response body (root)');
+              }
+              else if (response.data?.token) {
+                this.storeToken(response.data.token);
+                console.log('Token extracted from response body (data.token)');
+              }
+              else if (response.data?.jwt) {
+                this.storeToken(response.data.jwt);
+                console.log('Token extracted from response body (data.jwt)');
+              }
+              else {
+                console.error('No token found in response', response);
+              }
+
+              // Stocker les informations utilisateur
+              const user = response.data?.user || response.user;
+              if (user) {
+                this.storeUser(user);
+                this.currentUserSubject.next(user);
+              }
+            }),
+            map(response => response.data?.user || response.user),
+            catchError(error => {
+              console.error('Login error', error);
+              return throwError(() => new Error(error.error?.status?.message || 'Login failed'));
+            })
+        );
   }
 
   // Inscription
@@ -163,5 +182,22 @@ export class AuthService {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       }
     });
+  }
+
+  /**
+   * Gets the current user from local storage
+   * @returns The current user or null if not logged in
+   */
+  getCurrentUser(): any {
+    const userString = localStorage.getItem('currentUser');
+    if (userString) {
+      try {
+        return JSON.parse(userString);
+      } catch (e) {
+        console.error('Error parsing user data from localStorage', e);
+        return null;
+      }
+    }
+    return null;
   }
 }
