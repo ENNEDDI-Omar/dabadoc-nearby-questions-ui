@@ -12,7 +12,7 @@ export class AnswerService {
 
   constructor(private http: HttpClient) { }
 
-  // Get answers for a specific question
+
   getAnswers(questionId: string): Observable<Answer[]> {
     return this.http.get<Answer[]>(`${this.apiUrl}/${questionId}/answers`);
   }
