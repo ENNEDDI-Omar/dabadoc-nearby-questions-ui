@@ -93,7 +93,7 @@
             <a [routerLink]="['/questions', question.id]" class="hover:underline">{{ question.title }}</a>
           </h3>
           <p class="mt-1 max-w-2xl text-sm text-gray-500">
-              Posted by {{ question.user?.name || 'User-' + (question.user_id ? question.user_id.substring(0, 5) : 'Anonymous') }}
+              Posted by {{ question.user?.name || (question.user && question.user.name) || 'Anonymous' }} on {{ question.created_at | date }}
           </p>
             <p *ngIf="question.distance" class="text-xs text-gray-500 mt-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

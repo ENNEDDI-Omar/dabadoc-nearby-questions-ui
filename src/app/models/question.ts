@@ -4,8 +4,10 @@ export interface Question {
   title: string;
   content: string;
   location: {
-    type: string;
-    coordinates: number[];
+    type?: string;
+    coordinates?: number[];
+    latitude?: number;
+    longitude?: number;
   };
   user_id?: string;
   created_at?: Date;

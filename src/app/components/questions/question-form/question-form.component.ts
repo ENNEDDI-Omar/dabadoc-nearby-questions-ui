@@ -1,4 +1,3 @@
-// question-form.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -60,21 +59,30 @@ export class QuestionFormComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    const questionData: Question = {
+
+    const locationGeoJSON = {
+      type: 'Point',
+      coordinates: [this.userLocation.longitude, this.userLocation.latitude]
+    };
+
+    const questionData = {
       title: this.questionForm.value.title,
       content: this.questionForm.value.content,
-      location: this.userLocation
+      location: {
+        latitude: this.userLocation.latitude,
+        longitude: this.userLocation.longitude
+      }
     };
 
     this.questionService.createQuestion(questionData).subscribe(
-      (response) => {
-        this.isSubmitting = false;
-        this.router.navigate(['/questions']);
-      },
-      (error) => {
-        this.isSubmitting = false;
-        this.errorMessage = error.error?.errors?.join(', ') || 'An error occurred while posting your question.';
-      }
+        (response) => {
+          this.isSubmitting = false;
+          this.router.navigate(['/questions']);
+        },
+        (error) => {
+          this.isSubmitting = false;
+          this.errorMessage = error.error?.errors?.join(', ') || 'An error occurred while posting your question.';
+        }
     );
   }
 }

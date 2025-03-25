@@ -9,14 +9,14 @@ import {map} from "rxjs/operators";
   providedIn: 'root'
 })
 export class QuestionService {
-  private apiUrl = `${environment.apiUrl}`;
+  private apiUrl = `${environment.apiUrl}/questions`;
 
   constructor(private http: HttpClient) { }
 
 
-  // Exemple de ce que devrait faire votre QuestionService
+
   getQuestions(lat?: number, lng?: number, radius?: number): Observable<Question[]> {
-    let url = `${environment.apiUrl}/api/v1/questions`;
+    let url = this.apiUrl;
     let params = new HttpParams();
 
     if (lat && lng) {
@@ -30,7 +30,6 @@ export class QuestionService {
     return this.http.get<any[]>(url, { params }).pipe(
         map(response => {
           return response.map(item => {
-            // Garder le format GeoJSON tel quel
             return {
               id: item._id || item.id,
               _id: item._id,
@@ -43,7 +42,7 @@ export class QuestionService {
               user_id: item.user_id,
               created_at: item.created_at,
               updated_at: item.updated_at,
-              user: {
+              user: item.user || {
                 id: item.user_id || '',
                 name: 'User-' + (item.user_id ? item.user_id.substring(0, 5) : 'Anonymous'),
                 email: ''
@@ -64,7 +63,7 @@ export class QuestionService {
 
 
   createQuestion(question: Question): Observable<Question> {
-    return this.http.post<Question>(this.apiUrl, { question });
+    return this.http.post<Question>(`${this.apiUrl}/`, { question });
   }
 
 
@@ -89,6 +88,6 @@ export class QuestionService {
 
 
   getFavorites(): Observable<Question[]> {
-    return this.http.get<Question[]>(`${environment.apiUrl}/favorites`);
+    return this.http.get<Question[]>(`${this.apiUrl}/favorites`);
   }
 }

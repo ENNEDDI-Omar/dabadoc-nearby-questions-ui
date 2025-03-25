@@ -38,13 +38,13 @@ export class QuestionListComponent implements OnInit {
         },
         (error) => {
           console.error('Error getting location:', error);
-          this.loadQuestions(); // Load all questions if location not available
+          this.loadQuestions();
           this.loading = false;
           this.error = 'Unable to get your location. Showing all questions.';
         }
       );
     } else {
-      this.loadQuestions(); // Load all questions if geolocation not supported
+      this.loadQuestions();
       this.loading = false;
     }
   }
@@ -58,31 +58,8 @@ export class QuestionListComponent implements OnInit {
           this.searchRadius
       ).subscribe(
           (questionsFromApi) => {
-            // Transformation des données
-            this.questions = questionsFromApi.map(q => {
-              return {
-                id: q._id,
-                _id: q._id,
-                title: q.title,
-                content: q.content,
-                location: q.location || {
-                  type: 'Point',
-                  coordinates: [0, 0]
-                },
-                user_id: q.user_id,
-                created_at: q.created_at,
-                updated_at: q.updated_at,
-                user: {
-                  id: q.user_id || '',
-                  name: 'User-' + (q.user_id ? q.user_id.substring(0, 5) : 'Anonymous'),
-                  email: ''
-                },
-                distance: q.distance,
-                answers_count: q.answers_count || 0,
-                favorites_count: q.favorites_count || 0
-              };
-            });
-
+            console.log('Questions from service:', questionsFromApi);
+            this.questions = questionsFromApi;
             this.sortQuestions();
             this.loading = false;
           },
@@ -93,32 +70,10 @@ export class QuestionListComponent implements OnInit {
           }
       );
     } else {
-      // Même transformation pour le cas sans localisation
       this.questionService.getQuestions().subscribe(
           (questionsFromApi) => {
-            this.questions = questionsFromApi.map(q => {
-              return {
-                id: q._id,
-                _id: q._id,
-                title: q.title,
-                content: q.content,
-                location: q.location || {
-                  type: 'Point',
-                  coordinates: [0, 0]
-                },
-                user_id: q.user_id,
-                created_at: q.created_at,
-                updated_at: q.updated_at,
-                user: {
-                  id: q.user_id || '',
-                  name: 'User-' + (q.user_id ? q.user_id.substring(0, 5) : 'Anonymous'),
-                  email: ''
-                },
-                distance: q.distance,
-                answers_count: q.answers_count || 0,
-                favorites_count: q.favorites_count || 0
-              };
-            });
+            console.log('Questions without location:', questionsFromApi);
+            this.questions = questionsFromApi;
             this.loading = false;
           },
           (error) => {
@@ -165,19 +120,19 @@ export class QuestionListComponent implements OnInit {
   }
 
 
-  getLatitude(question: Question): number {
-    if (question.location?.coordinates?.length >= 2) {
-      return question.location.coordinates[1];
-    }
-    return 0;
-  }
+  //getLatitude(question: Question): number {
+    //if (question.location?.coordinates?.length >= 2) {
+      //return question.location.coordinates[1];
+    //}
+    //return 0;
+  //}
 
-  getLongitude(question: Question): number {
-    if (question.location?.coordinates?.length >= 1) {
-      return question.location.coordinates[0];
-    }
-    return 0;
-  }
+  //getLongitude(question: Question): number {
+    //if (question.location?.coordinates?.length >= 1) {
+      //return question.location.coordinates[0];
+    //}
+    //return 0;
+  //}
 
   addToFavorites(questionId: string) {
     this.questionService.addToFavorites(questionId).subscribe(
