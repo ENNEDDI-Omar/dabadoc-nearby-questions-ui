@@ -5,7 +5,6 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
-// Définir des interfaces pour les modèles
 export interface User {
   id?: string;
   name: string;
@@ -56,7 +55,7 @@ export class AuthService {
 
   // Connexion
   login(credentials: LoginRequest): Observable<User> {
-    return this.http.post<any>(`${this.apiUrl}/api/v1/login`, credentials)
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials)
         .pipe(
             tap(response => {
               console.log('Login response:', response);
@@ -102,41 +101,65 @@ export class AuthService {
 
   // Inscription
   register(userData: RegisterRequest): Observable<User> {
-    return this.http.post<any>(`${this.apiUrl}/signup`, userData)
-      .pipe(
-        tap(response => {
-          // Si l'inscription réussit automatiquement la connexion
-          const authHeader = response.headers?.get('Authorization');
-          if (authHeader) {
-            const token = authHeader.split(' ')[1];
-            this.storeToken(token);
-          }
+    return this.http.post<any>(`${this.apiUrl}/signup`, userData, { observe: 'response' })
+        .pipe(
+            tap(response => {
+              console.log('Register response:', response);
 
-          const user = response.data?.user;
-          if (user) {
-            this.storeUser(user);
-            this.currentUserSubject.next(user);
-          }
-        }),
-        map(response => response.data?.user),
-        catchError(error => {
-          console.error('Registration error', error);
-          return throwError(() => new Error(error.error?.status?.message || 'Registration failed'));
-        })
-      );
+              // Vérifier si le token est dans l'en-tête Authorization
+              const authHeader = response.headers.get('Authorization');
+              if (authHeader) {
+                const token = authHeader.split(' ')[1]; // Extraire le token après "Bearer "
+                this.storeToken(token);
+                console.log('Token from header stored successfully');
+              }
+
+              // Extraire et stocker les données utilisateur
+              const user = response.body?.data?.user || response.body?.user;
+              if (user) {
+                this.storeUser(user);
+                this.currentUserSubject.next(user);
+              }
+            }),
+            map(response => response.body?.data?.user || response.body?.user),
+            catchError(error => {
+              console.error('Registration error', error);
+              return throwError(() => new Error(error.error?.status?.message || 'Registration failed'));
+            })
+        );
   }
 
   // Déconnexion
   logout(): void {
-    // Nettoyer le localStorage et réinitialiser l'utilisateur actuel
+    // Récupérer le token avant de le supprimer
+    const token = this.getToken();
+
+    if (token) {
+      this.http.delete(`${this.apiUrl}/logout`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).subscribe({
+        next: () => {
+          console.log('Logged out successfully');
+          this.clearStorage();
+        },
+        error: error => {
+          console.error('Logout error', error);
+          this.clearStorage();
+        }
+      });
+    } else {
+      // Si aucun token n'est présent, simplement nettoyer le stockage
+      this.clearStorage();
+    }
+  }
+
+// Méthode auxiliaire pour nettoyer le stockage
+  private clearStorage(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
-
-    // Optionnel: appeler l'API pour invalider le token côté serveur
-    this.http.delete(`${this.apiUrl}/logout`).subscribe({
-      error: error => console.error('Logout error', error)
-    });
   }
 
   // Vérifier si l'utilisateur est connecté

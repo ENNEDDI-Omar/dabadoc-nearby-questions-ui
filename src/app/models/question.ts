@@ -1,11 +1,13 @@
 export interface Question {
+  _id?: string;
   id?: string;
   title: string;
   content: string;
   location: {
-    latitude: number;
-    longitude: number;
+    type: string;
+    coordinates: number[];
   };
+  user_id?: string;
   created_at?: Date;
   updated_at?: Date;
   user?: {
@@ -15,4 +17,5 @@ export interface Question {
   };
   distance?: number;
   answers_count?: number;
+  favorites_count?: number;
 }

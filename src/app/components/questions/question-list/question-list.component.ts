@@ -53,31 +53,79 @@ export class QuestionListComponent implements OnInit {
     this.loading = true;
     if (this.userLocation) {
       this.questionService.getQuestions(
-        this.userLocation.latitude,
-        this.userLocation.longitude,
-        this.searchRadius
+          this.userLocation.latitude,
+          this.userLocation.longitude,
+          this.searchRadius
       ).subscribe(
-        (questions) => {
-          this.questions = questions;
-          this.sortQuestions();
-          this.loading = false;
-        },
-        (error) => {
-          this.error = 'Error loading questions. Please try again.';
-          this.loading = false;
-        }
+          (questionsFromApi) => {
+            // Transformation des données
+            this.questions = questionsFromApi.map(q => {
+              return {
+                id: q._id,
+                _id: q._id,
+                title: q.title,
+                content: q.content,
+                location: q.location || {
+                  type: 'Point',
+                  coordinates: [0, 0]
+                },
+                user_id: q.user_id,
+                created_at: q.created_at,
+                updated_at: q.updated_at,
+                user: {
+                  id: q.user_id || '',
+                  name: 'User-' + (q.user_id ? q.user_id.substring(0, 5) : 'Anonymous'),
+                  email: ''
+                },
+                distance: q.distance,
+                answers_count: q.answers_count || 0,
+                favorites_count: q.favorites_count || 0
+              };
+            });
+
+            this.sortQuestions();
+            this.loading = false;
+          },
+          (error) => {
+            this.error = 'Error loading questions. Please try again.';
+            this.loading = false;
+            console.error('Error loading questions:', error);
+          }
       );
     } else {
-      // Load all questions if no location
+      // Même transformation pour le cas sans localisation
       this.questionService.getQuestions().subscribe(
-        (questions) => {
-          this.questions = questions;
-          this.loading = false;
-        },
-        (error) => {
-          this.error = 'Error loading questions. Please try again.';
-          this.loading = false;
-        }
+          (questionsFromApi) => {
+            this.questions = questionsFromApi.map(q => {
+              return {
+                id: q._id,
+                _id: q._id,
+                title: q.title,
+                content: q.content,
+                location: q.location || {
+                  type: 'Point',
+                  coordinates: [0, 0]
+                },
+                user_id: q.user_id,
+                created_at: q.created_at,
+                updated_at: q.updated_at,
+                user: {
+                  id: q.user_id || '',
+                  name: 'User-' + (q.user_id ? q.user_id.substring(0, 5) : 'Anonymous'),
+                  email: ''
+                },
+                distance: q.distance,
+                answers_count: q.answers_count || 0,
+                favorites_count: q.favorites_count || 0
+              };
+            });
+            this.loading = false;
+          },
+          (error) => {
+            this.error = 'Error loading questions. Please try again.';
+            this.loading = false;
+            console.error('Error loading questions:', error);
+          }
       );
     }
   }
@@ -114,6 +162,21 @@ export class QuestionListComponent implements OnInit {
   updateSortOption(option: string) {
     this.sortOption = option;
     this.sortQuestions();
+  }
+
+
+  getLatitude(question: Question): number {
+    if (question.location?.coordinates?.length >= 2) {
+      return question.location.coordinates[1];
+    }
+    return 0;
+  }
+
+  getLongitude(question: Question): number {
+    if (question.location?.coordinates?.length >= 1) {
+      return question.location.coordinates[0];
+    }
+    return 0;
   }
 
   addToFavorites(questionId: string) {

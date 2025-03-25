@@ -1,27 +1,60 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Question } from '../models/question';
 import { environment } from '../../environments/environment';
+import {map} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService {
-  private apiUrl = `${environment.apiUrl}/api/v1/questions`;
+  private apiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
 
 
-  getQuestions(lat?: number, lng?: number, distance?: number): Observable<Question[]> {
-    let url = this.apiUrl;
+  // Exemple de ce que devrait faire votre QuestionService
+  getQuestions(lat?: number, lng?: number, radius?: number): Observable<Question[]> {
+    let url = `${environment.apiUrl}/api/v1/questions`;
+    let params = new HttpParams();
+
     if (lat && lng) {
-      url += `?lat=${lat}&lng=${lng}`;
-      if (distance) {
-        url += `&distance=${distance}`;
+      params = params.set('lat', lat.toString());
+      params = params.set('lng', lng.toString());
+      if (radius) {
+        params = params.set('distance', radius.toString());
       }
     }
-    return this.http.get<Question[]>(url);
+
+    return this.http.get<any[]>(url, { params }).pipe(
+        map(response => {
+          return response.map(item => {
+            // Garder le format GeoJSON tel quel
+            return {
+              id: item._id || item.id,
+              _id: item._id,
+              title: item.title,
+              content: item.content,
+              location: item.location || {
+                type: 'Point',
+                coordinates: [0, 0]
+              },
+              user_id: item.user_id,
+              created_at: item.created_at,
+              updated_at: item.updated_at,
+              user: {
+                id: item.user_id || '',
+                name: 'User-' + (item.user_id ? item.user_id.substring(0, 5) : 'Anonymous'),
+                email: ''
+              },
+              distance: item.distance,
+              answers_count: item.answers_count || 0,
+              favorites_count: item.favorites_count || 0
+            } as Question;
+          });
+        })
+    );
   }
 
 
@@ -56,6 +89,6 @@ export class QuestionService {
 
 
   getFavorites(): Observable<Question[]> {
-    return this.http.get<Question[]>(`${environment.apiUrl}/api/v1/favorites`);
+    return this.http.get<Question[]>(`${environment.apiUrl}/favorites`);
   }
 }
