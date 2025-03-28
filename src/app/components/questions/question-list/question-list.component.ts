@@ -14,11 +14,19 @@ import { Question } from '../../../models/question';
 })
 export class QuestionListComponent implements OnInit {
   questions: Question[] = [];
+  allQuestions: Question[] = [];
   loading = true;
+  loadedSome = false;
   error = '';
   userLocation: { latitude: number, longitude: number } | null = null;
   searchRadius = 10;
   sortOption = 'distance';
+
+  pagination = {
+    currentPage: 1,
+    itemsPerPage: 6,
+    totalItems: 0
+  };
 
   constructor(private questionService: QuestionService) { }
 
@@ -51,6 +59,7 @@ export class QuestionListComponent implements OnInit {
 
   loadQuestions() {
     this.loading = true;
+    this.loadedSome = false;
     if (this.userLocation) {
       this.questionService.getQuestions(
           this.userLocation.latitude,
@@ -58,9 +67,13 @@ export class QuestionListComponent implements OnInit {
           this.searchRadius
       ).subscribe(
           (questionsFromApi) => {
+            this.loadedSome = true;
             console.log('Questions from service:', questionsFromApi);
             this.questions = questionsFromApi;
+            this.allQuestions = questionsFromApi;
+            this.pagination.totalItems = this.allQuestions.length;
             this.sortQuestions();
+            this.applyPagination();
             this.loading = false;
           },
           (error) => {
@@ -73,7 +86,11 @@ export class QuestionListComponent implements OnInit {
       this.questionService.getQuestions().subscribe(
           (questionsFromApi) => {
             console.log('Questions without location:', questionsFromApi);
+            this.allQuestions = questionsFromApi;
+            this.pagination.totalItems = this.allQuestions.length;
             this.questions = questionsFromApi;
+            this.sortQuestions();
+            this.applyPagination();
             this.loading = false;
           },
           (error) => {
@@ -94,26 +111,50 @@ export class QuestionListComponent implements OnInit {
 
   sortQuestions() {
     if (this.sortOption === 'distance' && this.userLocation) {
-      this.questions.sort((a, b) => {
+      this.allQuestions.sort((a, b) => {
         const distanceA = a.distance || Infinity;
         const distanceB = b.distance || Infinity;
         return distanceA - distanceB;
       });
     } else if (this.sortOption === 'newest') {
-      this.questions.sort((a, b) => {
+      this.allQuestions.sort((a, b) => {
         const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
         const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
         return dateB - dateA;
       });
     } else if (this.sortOption === 'mostAnswers') {
-      this.questions.sort((a, b) => {
+      this.allQuestions.sort((a, b) => {
         const answersA = a.answers_count || 0;
         const answersB = b.answers_count || 0;
         return answersB - answersA;
       });
     }
+
+    // Après le tri, appliquer la pagination
+    this.applyPagination();
   }
 
+  // Nouvelle méthode pour paginer les résultats
+  applyPagination() {
+    const startIndex = (this.pagination.currentPage - 1) * this.pagination.itemsPerPage;
+    const endIndex = startIndex + this.pagination.itemsPerPage;
+
+    // Mettre à jour les questions affichées
+    this.questions = this.allQuestions.slice(startIndex, endIndex);
+  }
+
+  // Méthode pour changer de page
+  changePage(page: number) {
+    this.pagination.currentPage = page;
+    this.applyPagination();
+  }
+
+  // Obtenir le nombre total de pages
+  get totalPages(): number {
+    return Math.ceil(this.pagination.totalItems / this.pagination.itemsPerPage);
+  }
+
+  // Pour la mise à jour du tri
   updateSortOption(option: string) {
     this.sortOption = option;
     this.sortQuestions();

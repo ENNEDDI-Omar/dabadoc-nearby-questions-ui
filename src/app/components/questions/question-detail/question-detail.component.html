@@ -1,167 +1,226 @@
 <!-- question-detail.component.html -->
 <div class="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-  <!-- Loading State -->
-  <div *ngIf="loading" class="flex justify-center py-8">
-    <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-    </svg>
-  </div>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center py-8">
+        <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </div>
 
-  <!-- Error State -->
-  <div *ngIf="error && !loading" class="p-4 bg-red-50 text-red-700 rounded-md mb-4">
-    {{ error }}
-  </div>
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="p-4 bg-red-50 text-red-700 rounded-md mb-4">
+        {{ error }}
+    </div>
 
-  <!-- Question Details -->
-  <div *ngIf="question && !loading" class="bg-white shadow overflow-hidden sm:rounded-lg">
-    <!-- Question Header -->
-    <div class="px-4 py-5 sm:px-6 flex justify-between items-start">
-      <div>
-        <h2 class="text-2xl font-bold text-gray-900">{{ question.title }}</h2>
-        <p class="mt-1 text-sm text-gray-500">
-          Posted by {{ question.user?.name || 'Anonymous' }}
-          <span *ngIf="question.created_at" class="ml-2">
+    <!-- Question Details -->
+    <div *ngIf="question && !loading" class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <!-- Question Header -->
+        <div class="px-4 py-5 sm:px-6 flex justify-between items-start">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">{{ question.title }}</h2>
+                <p class="mt-1 text-sm text-gray-500">
+                    Posted by {{ question.user?.name || 'Anonymous' }}
+                    <span *ngIf="question.created_at" class="ml-2">
             on {{ question.created_at | date:'medium' }}
           </span>
-        </p>
-        <p *ngIf="question.distance" class="text-xs text-gray-500 mt-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          {{ question.distance | number:'1.1-1' }} km away
-        </p>
-      </div>
+                </p>
+                <p *ngIf="question.distance" class="text-xs text-gray-500 mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {{ question.distance | number:'1.1-1' }} km away
+                </p>
+            </div>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center space-x-2">
-        <!-- Favorite Button -->
-        <button
-          (click)="toggleFavorite()"
-          [disabled]="isTogglingFavorite"
-          class="text-gray-400 hover:text-yellow-500 focus:outline-none"
-          [ngClass]="{'text-yellow-500': isFavorite}"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [attr.fill]="isFavorite ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-          </svg>
-        </button>
+            <!-- Action Buttons -->
+            <div class="flex items-center space-x-2">
+                <!-- Favorite Button -->
+                <button
+                        (click)="toggleFavorite()"
+                        [disabled]="isTogglingFavorite"
+                        class="text-gray-400 hover:text-yellow-500 focus:outline-none"
+                        [ngClass]="{'text-yellow-500': isFavorite}"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [attr.fill]="isFavorite ? 'currentColor' : 'none'" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                </button>
 
-        <!-- Delete Button (Only shown to author) -->
-        <button *ngIf="isAuthor()" (click)="deleteQuestion()" class="text-gray-400 hover:text-red-500 focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-        </button>
-      </div>
+                <!-- Delete Button (Only shown to author) -->
+                <button *ngIf="isAuthor()" (click)="deleteQuestion()" class="text-gray-400 hover:text-red-500 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Content -->
+        <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
+            <p class="text-gray-700 whitespace-pre-line">{{ question.content }}</p>
+        </div>
     </div>
 
-    <!-- Question Content -->
-    <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
-      <p class="text-gray-700 whitespace-pre-line">{{ question.content }}</p>
-    </div>
-  </div>
-
-  <!-- Answers Section -->
-  <div *ngIf="question && !loading" class="mt-8">
-    <h3 class="text-lg font-semibold text-gray-900 mb-4">
-      Answers
-      <span class="text-gray-500 text-sm font-normal ml-2" *ngIf="question.answers_count">
+    <!-- Answers Section -->
+    <div *ngIf="question && !loading" class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Answers
+            <span class="text-gray-500 text-sm font-normal ml-2" *ngIf="question.answers_count">
         ({{ question.answers_count }})
       </span>
-    </h3>
+        </h3>
 
-    <!-- Loading answers -->
-    <div *ngIf="loadingAnswers" class="flex justify-center py-4">
-      <svg class="animate-spin h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-      </svg>
-    </div>
+        <!-- Loading answers -->
+        <div *ngIf="loadingAnswers" class="flex justify-center py-4">
+            <svg class="animate-spin h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
 
-    <!-- No answers state -->
-    <div *ngIf="!loadingAnswers && answers.length === 0" class="bg-white shadow sm:rounded-lg mb-4">
-      <div class="px-4 py-5 sm:px-6">
-        <p class="text-gray-700">No answers yet. Be the first to answer this question!</p>
-      </div>
-    </div>
-
-    <!-- Answers list -->
-    <div *ngIf="!loadingAnswers && answers.length > 0" class="space-y-4">
-      <div *ngFor="let answer of answers" class="bg-white shadow sm:rounded-lg mb-4">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-          <div class="flex justify-between items-start">
-            <div>
-              <p class="font-medium text-gray-900">{{ answer.user?.name || 'Anonymous' }}</p>
-              <p class="text-xs text-gray-500" *ngIf="answer.created_at">
-                {{ answer.created_at | date:'medium' }}
-              </p>
+        <!-- No answers state -->
+        <div *ngIf="!loadingAnswers && answers.length === 0" class="bg-white shadow sm:rounded-lg mb-4">
+            <div class="px-4 py-5 sm:px-6">
+                <p class="text-gray-700">No answers yet. Be the first to answer this question!</p>
             </div>
-          </div>
-        </div>
-        <div class="px-4 py-5 sm:px-6">
-          <p class="text-gray-700 whitespace-pre-line">{{ answer.content }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Answer Form -->
-    <div *ngIf="isLoggedIn" class="mt-6 bg-white shadow sm:rounded-lg">
-      <div class="px-4 py-5 sm:px-6">
-        <h4 class="text-md font-medium text-gray-900 mb-4">Your Answer</h4>
-
-        <div *ngIf="answerError" class="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-          {{ answerError }}
         </div>
 
-        <form [formGroup]="answerForm" (ngSubmit)="submitAnswer()">
-          <div class="mb-4">
+        <!-- Answers list -->
+        <div *ngIf="!loadingAnswers && answers.length > 0" class="space-y-4">
+            <div *ngFor="let answer of answers" class="bg-white shadow sm:rounded-lg mb-4">
+                <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-medium text-gray-900">{{ answer.user?.name || 'Anonymous' }}</p>
+                            <p class="text-xs text-gray-500" *ngIf="answer.created_at">
+                                {{ formatDate(answer.created_at) }}
+                            </p>
+                        </div>
+
+                        <!-- Actions pour les auteurs de réponses -->
+                        <div *ngIf="isAnswerAuthor(answer)" class="flex space-x-2">
+                            <button
+                                    *ngIf="editingAnswerId !== getObjectId(answer)"
+                                    (click)="startEditingAnswer(answer)"
+                                    class="text-gray-400 hover:text-indigo-500 focus:outline-none"
+                                    title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </button>
+                            <button
+                                    (click)="deleteAnswer(getObjectId(answer))"
+                                    class="text-gray-400 hover:text-red-500 focus:outline-none"
+                                    title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-4 py-5 sm:px-6">
+                    <!-- Mode vue -->
+                    <div *ngIf="editingAnswerId !== getObjectId(answer)">
+                        <p class="text-gray-700 whitespace-pre-line">{{ answer.content }}</p>
+                    </div>
+
+                    <!-- Mode édition -->
+                    <div *ngIf="editingAnswerId === getObjectId(answer)" class="space-y-3">
+                        <form [formGroup]="editAnswerForm">
+              <textarea
+                      rows="4"
+                      formControlName="content"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              ></textarea>
+
+                            <div *ngIf="editAnswerForm.get('content')?.invalid && editAnswerForm.get('content')?.touched" class="mt-1 text-red-600 text-sm">
+                                Answer is required and must be at least 10 characters.
+                            </div>
+
+                            <div class="mt-3 flex justify-end space-x-2">
+                                <button
+                                        type="button"
+                                        (click)="cancelEditingAnswer()"
+                                        class="px-3 py-1 border border-gray-300 text-sm rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                        type="button"
+                                        [disabled]="editAnswerForm.invalid || isSubmittingEdit"
+                                        (click)="updateAnswer(getObjectId(answer) || '')"
+                                        class="px-3 py-1 border border-transparent text-sm rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-50"
+                                >
+                                    <span *ngIf="isSubmittingEdit">Saving...</span>
+                                    <span *ngIf="!isSubmittingEdit">Save</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Answer Form -->
+        <div *ngIf="isLoggedIn" class="mt-6 bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h4 class="text-md font-medium text-gray-900 mb-4">Your Answer</h4>
+
+                <div *ngIf="answerError" class="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
+                    {{ answerError }}
+                </div>
+
+                <form [formGroup]="answerForm" (ngSubmit)="submitAnswer()">
+                    <div class="mb-4">
             <textarea
-              rows="4"
-              formControlName="content"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Write your answer here..."
+                    rows="4"
+                    formControlName="content"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Write your answer here..."
             ></textarea>
-            <div *ngIf="answerForm.get('content')?.invalid && answerForm.get('content')?.touched" class="mt-1 text-red-600 text-sm">
-              An answer is required and must be at least 10 characters.
+                        <div *ngIf="answerForm.get('content')?.invalid && answerForm.get('content')?.touched" class="mt-1 text-red-600 text-sm">
+                            An answer is required and must be at least 10 characters.
+                        </div>
+                    </div>
+
+                    <button
+                            type="submit"
+                            [disabled]="answerForm.invalid || isSubmittingAnswer"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                    >
+                        <span *ngIf="isSubmittingAnswer">Submitting...</span>
+                        <span *ngIf="!isSubmittingAnswer">Submit Answer</span>
+                    </button>
+                </form>
             </div>
-          </div>
+        </div>
 
-          <button
-            type="submit"
-            [disabled]="answerForm.invalid || isSubmittingAnswer"
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-          >
-            <span *ngIf="isSubmittingAnswer">Submitting...</span>
-            <span *ngIf="!isSubmittingAnswer">Submit Answer</span>
-          </button>
-        </form>
-      </div>
+        <!-- Login prompt if not logged in -->
+        <div *ngIf="!isLoggedIn" class="mt-6 bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6 text-center">
+                <p class="text-gray-700 mb-4">You need to be logged in to answer this question.</p>
+                <a [routerLink]="['/login']" [queryParams]="{returnUrl: router.url}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Log In
+                </a>
+            </div>
+        </div>
     </div>
 
-    <!-- Login prompt if not logged in -->
-    <div *ngIf="!isLoggedIn" class="mt-6 bg-white shadow sm:rounded-lg">
-      <div class="px-4 py-5 sm:px-6 text-center">
-        <p class="text-gray-700 mb-4">You need to be logged in to answer this question.</p>
-        <a [routerLink]="['/login']" [queryParams]="{returnUrl: router.url}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Log In
-        </a>
-      </div>
+    <!-- Back Button -->
+    <div class="mt-6">
+        <button
+                type="button"
+                [routerLink]="['/questions']"
+                class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+            <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Back to Questions
+        </button>
     </div>
-  </div>
-
-  <!-- Back Button -->
-  <div class="mt-6">
-    <button
-      type="button"
-      [routerLink]="['/questions']"
-      class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-    >
-      <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-      </svg>
-      Back to Questions
-    </button>
-  </div>
 </div>

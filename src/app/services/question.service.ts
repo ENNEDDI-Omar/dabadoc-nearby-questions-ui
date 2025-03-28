@@ -10,10 +10,9 @@ import {map} from "rxjs/operators";
 })
 export class QuestionService {
   private apiUrl = `${environment.apiUrl}/questions`;
+  private baseApiUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
-
-
 
   getQuestions(lat?: number, lng?: number, radius?: number): Observable<Question[]> {
     let url = this.apiUrl;
@@ -56,31 +55,25 @@ export class QuestionService {
     );
   }
 
-
   getQuestion(id: string): Observable<Question> {
     return this.http.get<Question>(`${this.apiUrl}/${id}`);
   }
-
 
   createQuestion(question: Question): Observable<Question> {
     return this.http.post<Question>(`${this.apiUrl}/`, { question });
   }
 
-
   updateQuestion(id: string, question: Question): Observable<Question> {
     return this.http.put<Question>(`${this.apiUrl}/${id}`, { question });
   }
-
 
   deleteQuestion(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-
   addToFavorites(questionId: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/${questionId}/favorites`, {});
   }
-
 
   removeFromFavorites(questionId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${questionId}/favorites`);
@@ -88,6 +81,6 @@ export class QuestionService {
 
 
   getFavorites(): Observable<Question[]> {
-    return this.http.get<Question[]>(`${this.apiUrl}/favorites`);
+    return this.http.get<Question[]>(`${this.baseApiUrl}/favorites`);
   }
 }

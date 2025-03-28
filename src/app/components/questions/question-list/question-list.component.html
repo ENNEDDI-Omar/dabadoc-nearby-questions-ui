@@ -129,6 +129,54 @@
     </div>
   </div>
 
+    <!-- À la fin de votre liste de questions -->
+    <div *ngIf="totalPages > 1" class="mt-4 flex justify-center">
+        <nav class="flex items-center space-x-2">
+            <button
+                    (click)="changePage(pagination.currentPage - 1)"
+                    [disabled]="pagination.currentPage === 1"
+                    class="px-3 py-1 rounded border text-sm disabled:opacity-50"
+            >
+                Previous
+            </button>
+
+            <!-- Pages numérotées (optionnel) -->
+            <ng-container *ngIf="totalPages <= 7">
+                <button
+                        *ngFor="let page of [].constructor(totalPages); let i = index"
+                        (click)="changePage(i+1)"
+                        [class.bg-indigo-600]="pagination.currentPage === i+1"
+                        [class.text-white]="pagination.currentPage === i+1"
+                        class="px-3 py-1 rounded border text-sm"
+                >
+                    {{ i+1 }}
+                </button>
+            </ng-container>
+
+            <!-- Version simplifiée pour beaucoup de pages -->
+            <ng-container *ngIf="totalPages > 7">
+                <button
+                        *ngFor="let page of [-2, -1, 0, 1, 2]"
+                        (click)="changePage(pagination.currentPage + page)"
+                        [class.bg-indigo-600]="page === 0"
+                        [class.text-white]="page === 0"
+                        [class.hidden]="pagination.currentPage + page < 1 || pagination.currentPage + page > totalPages"
+                        class="px-3 py-1 rounded border text-sm"
+                >
+                    {{ pagination.currentPage + page }}
+                </button>
+            </ng-container>
+
+            <button
+                    (click)="changePage(pagination.currentPage + 1)"
+                    [disabled]="pagination.currentPage === totalPages"
+                    class="px-3 py-1 rounded border text-sm disabled:opacity-50"
+            >
+                Next
+            </button>
+        </nav>
+    </div>
+
   <!-- Add Question Button -->
   <div class="fixed bottom-6 right-6">
     <button [routerLink]="['/questions/new']" class="flex items-center justify-center h-14 w-14 rounded-full bg-indigo-600 text-white shadow-lg hover:bg-indigo-700 focus:outline-none">
@@ -137,4 +185,9 @@
       </svg>
     </button>
   </div>
+
+
+
 </div>
+
+
