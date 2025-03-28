@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { QuestionService } from '../../../services/question.service';
 import { Question } from '../../../models/question';
+import {FooterComponent} from "../../../shared/layouts/footer/footer.component";
 
 @Component({
   selector: 'app-question-form',
   templateUrl: './question-form.component.html',
   styleUrls: ['./question-form.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FooterComponent]
 })
 export class QuestionFormComponent implements OnInit {
   questionForm: FormGroup;

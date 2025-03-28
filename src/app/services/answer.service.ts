@@ -25,12 +25,10 @@ export class AnswerService {
     return this.http.post<Answer>(`${this.apiUrl}/${questionId}/answers`, { answer });
   }
 
-  // Update an existing answer
   updateAnswer(questionId: string, answerId: string, answer: { content: string }): Observable<Answer> {
     return this.http.put<Answer>(`${this.apiUrl}/${questionId}/answers/${answerId}`, { answer });
   }
 
-  // Delete an answer
   deleteAnswer(questionId: string, answerId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${questionId}/answers/${answerId}`);
   }

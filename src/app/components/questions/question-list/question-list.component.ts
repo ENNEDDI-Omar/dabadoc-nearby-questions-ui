@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { QuestionService } from '../../../services/question.service';
 import { Question } from '../../../models/question';
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-question-list',
@@ -21,6 +22,8 @@ export class QuestionListComponent implements OnInit {
   userLocation: { latitude: number, longitude: number } | null = null;
   searchRadius = 10;
   sortOption = 'distance';
+  favoriteQuestionIds: Set<string> = new Set();
+  isLoggedIn = false;
 
   pagination = {
     currentPage: 1,
@@ -28,10 +31,17 @@ export class QuestionListComponent implements OnInit {
     totalItems: 0
   };
 
-  constructor(private questionService: QuestionService) { }
+  constructor(
+      private questionService: QuestionService,
+      private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
     this.getUserLocation();
+    if (this.isLoggedIn) {
+      this.loadFavorites();
+    }
   }
 
   getUserLocation() {
@@ -67,8 +77,8 @@ export class QuestionListComponent implements OnInit {
           this.searchRadius
       ).subscribe(
           (questionsFromApi) => {
+            console.log('Questions loaded with answers count:', questionsFromApi.map(q => ({id: q.id, title: q.title, answers_count: q.answers_count})));
             this.loadedSome = true;
-            console.log('Questions from service:', questionsFromApi);
             this.questions = questionsFromApi;
             this.allQuestions = questionsFromApi;
             this.pagination.totalItems = this.allQuestions.length;
@@ -178,11 +188,57 @@ export class QuestionListComponent implements OnInit {
   addToFavorites(questionId: string) {
     this.questionService.addToFavorites(questionId).subscribe(
       () => {
-        // Show a success message or update UI
+
       },
       (error) => {
         console.error('Error adding to favorites:', error);
       }
     );
+  }
+
+  loadFavorites(): void {
+    this.questionService.getFavorites().subscribe({
+      next: (favorites) => {
+        this.favoriteQuestionIds = new Set(favorites.map(f => f.id || '').filter(id => id !== ''));
+      },
+      error: (error) => {
+        console.error('Error loading favorites:', error);
+      }
+    });
+  }
+
+  isQuestionFavorite(questionId: string): boolean {
+    return this.favoriteQuestionIds.has(questionId);
+  }
+
+  toggleFavorite(questionId: string, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.isLoggedIn) {
+      // Rediriger vers la page de connexion
+      // this.router.navigate(['/login']);
+      return;
+    }
+
+    if (this.isQuestionFavorite(questionId)) {
+      this.questionService.removeFromFavorites(questionId).subscribe({
+        next: () => {
+          this.favoriteQuestionIds.delete(questionId);
+        },
+        error: (error) => {
+          console.error('Error removing from favorites:', error);
+        }
+      });
+    } else {
+      this.questionService.addToFavorites(questionId).subscribe({
+        next: () => {
+          this.favoriteQuestionIds.add(questionId);
+        },
+        error: (error) => {
+          console.error('Error adding to favorites:', error);
+        }
+      });
+    }
   }
 }

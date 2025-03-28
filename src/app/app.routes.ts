@@ -7,6 +7,7 @@ import {authGuard} from "./guards/auth.guard";
 import {QuestionListComponent} from "./components/questions/question-list/question-list.component";
 import {QuestionDetailComponent} from "./components/questions/question-detail/question-detail.component";
 import {QuestionsComponent} from "./pages/questions/questions.component";
+import {FavoritesComponent} from "./pages/favorites/favorites.component";
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,6 +17,6 @@ export const routes: Routes = [
   { path: 'questions', component: QuestionsComponent },
   { path: 'questions/new', component: QuestionFormComponent, canActivate: [authGuard] },
   { path: 'questions/:id', component: QuestionDetailComponent },
-
+  { path: 'favorites', component: FavoritesComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' }
 ];
