@@ -1,40 +1,67 @@
 # DabadocNearbyQuestionsUi
+## Overview
+Frontend application for NearbyQ, a location-based Q&A platform that enables users to post questions relevant to specific locations and get answers from people nearby. This Angular application provides a user-friendly interface for managing questions, answers, and favorites.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
+## Features
+- **User Authentication**: Sign up and sign in functionality
+- **Post Questions**: Create questions with title, content, and location
+- **Answer Questions**: Reply to questions from other users
+- **Location-based Browsing**: View questions sorted by distance from your current location
+- **Distance Filtering**: Set a custom radius to view questions within specific distances
+- **Favorites Management**: Like questions to add them to favorites, and view your favorite questions
+- **Responsive Design**: Works on mobile, tablet and desktop devices
 
-# Description
-This project is a simple Angular-based front-end for the DabaDoc Nearby Questions web application designed to connect people who have location-specific questions with those who can provide answers. The questions are fetched from a REST API.
+## Technology Stack
+- **Angular**: Latest version with standalone components
+- **Tailwind CSS**: For styling and responsive design
+- **JWT Authentication**: For secure API communication
+- **Geolocation API**: For location-based features
+- **Angular Router**: For navigation and routing
 
-# Key Features:
+## Prerequisites
+- Node.js 16.0 or higher
+- npm 7.0 or higher
+- Angular CLI
 
-- User registration and authentication using email and password
-- Posting questions with a title, content, and location
-- Answering questions posted by other users
-- Viewing a list of questions sorted by distance from the user's location
-- Liking questions and adding them to a personal favorites list
-- Removing questions from the favorites list
-- Displaying liked questions
+## Installation and Setup
 
-## Development server
+1. Clone the repository
+   git clone https://github.com/yourusername/nearbyq-frontend.git
+2. Install dependencies
+   npm install
+3. Configure environment variables
+      Create or edit `src/environments/environment.ts`:
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:3000/api/v1'
+};
+```
+4. Start the development server
+   ng serve
+5. Open the application in your browser
+   http://localhost:4200
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Project Structure
 
-## Code scaffolding
+src/app/components - Angular components for the UI
+src/app/services - Services for API communication and business logic
+src/app/models - TypeScript interfaces for data models
+src/app/guards - Authentication guards for route protection
+src/app/interceptors - HTTP interceptors for JWT authentication
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Available Components
 
-## Build
+Home Component: Landing page with app introduction
+Login/Signup Components: User authentication screens
+Question List: List of questions with distance filtering
+Question Detail: View a question with its answers
+Question Form: Create or edit a question
+Favorite List: View favorite questions
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Future Enhancements
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Google Maps integration for visualizing questions on a map
+Real-time notifications when someone answers your question
+User profiles with reputation system
+Categories and tags for questions
